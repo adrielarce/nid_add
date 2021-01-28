@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "nidadda6c07972": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
