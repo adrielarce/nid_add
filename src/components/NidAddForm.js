@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import InputLabel from '@material-ui/core/InputLabel';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
+import { API } from "aws-amplify";
+import { AmplifySignOut } from '@aws-amplify/ui-react'
+
+const { v4: uuidv4 } = require('uuid');
 
 const styles = theme => ({
   root: {
@@ -9,181 +18,296 @@ const styles = theme => ({
       width: '25ch',
     },
   },
+  paper: {
+    margin: '1.5rem auto',
+    width: '80%',
+    padding: '1rem',
+  },
 });
 
 class NidAddForm extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      formControls: {
-        email: {
-          value: ''
-        },
-        name: {
-          value: ''
-        },
-        password: {
-          value: ''
-        }
-      }
-    }
-
+      type: "",
+      editorID: "",
+      sourceURL: "",
+      sourceDomain: "",
+      authors: "",
+      categories: "",
+      keywords: "",
+      stocks: "",
+      imageURL: "",
+      title: "",
+      cta: "",
+      summary: "",
+      htmlContent: ""
+    };
   }
-
-  changeHandler = event => {
-
-    const name = event.target.name;
-    const value = event.target.value;
-
+  handleChange = event => {
+    const id = event.target.id;
     this.setState({
-      formControls: {
-        ...this.state.formControls,
-        [name]: {
-          ...this.state.formControls[name],
-          value
-        }
+      [id]: event.target.value
+    });
+  };
+  /*
+  handleSubmit = async event => {
+    event.preventDefault();
+    console.log(this.state.sourceURL);
+    await API.post("nidAPI", "/nid", {
+      body: {
+        nid: uuidv4(),
+        added: Date.now(),
+        retrieve_method: "ManualSubmit",
+        type: this.state.type,
+        source: this.state.editorID,
+        article_url: this.state.sourceURL,
+        article_domain: this.state.sourceDomain,
+        authors: this.state.authors,
+        categories_submitted: this.state.categories,
+        keywords_submitted: this.state.keywords,
+        stocks: this.state.stocks,
+        picture: this.state.imageURL,
+        title: this.state.title,
+        cta: this.state.cta,
+        summary: this.state.summary,
+        html_content: this.state.html
       }
     });
+    this.setState({
+      type: "",
+      editorID: "",
+      sourceURL: "",
+      sourceDomain: "",
+      authors: "",
+      categories: "",
+      keywords: "",
+      stocks: "",
+      imageURL: "",
+      title: "",
+      cta: "",
+      summary: "",
+      html: ""
+    });
+  };
+  */
+  handleSubmit = async event => {
+    event.preventDefault();
+    //setIsLoading(true);
+    try {
+      await this.createNID({
+        type: this.state.type,
+        retrieve_method: "ManualSubmit",
+        editorID: this.state.editorID,
+        article_url: this.state.sourceURL,
+        article_domain: this.state.sourceDomain,
+        authors: this.state.authors,
+        categories: this.state.categories,
+        keywords: this.state.keywords,
+        stocks: this.state.stocks,
+        picture: this.state.imageURL,
+        title: this.state.title,
+        cta: this.state.cta,
+        summary: this.state.summary,
+        html: this.state.htmlContent
+      });
+      //clear form values after submit complete
+      this.setState({
+        type: "",
+        editorID: "",
+        sourceURL: "",
+        sourceDomain: "",
+        authors: "",
+        categories: "",
+        keywords: "",
+        stocks: "",
+        imageURL: "",
+        title: "",
+        cta: "",
+        summary: "",
+        htmlContent: ""
+      });
+    } catch (e) {
+      //onError(e);
+      //setIsLoading(false);
+    }
   }
-
+  createNID = content => {
+    return API.post("nid", "/nid", {
+      body: content
+    });
+  }
 
   render() {
     const { classes } = this.props;
     return (
-      <form className={classes.root} noValidate autoComplete="off">
-        <div>
-          <TextField required id="standard-required" label="Required" defaultValue="Hello World" />
-          <TextField disabled id="standard-disabled" label="Disabled" defaultValue="Hello World" />
-          <TextField
-            id="standard-password-input"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-          />
-          <TextField
-            id="standard-read-only-input"
-            label="Read Only"
-            defaultValue="Hello World"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-          <TextField
-            id="standard-number"
-            label="Number"
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField id="standard-search" label="Search field" type="search" />
-          <TextField
-            id="standard-helperText"
-            label="Helper text"
-            defaultValue="Default Value"
-            helperText="Some important text"
-          />
-        </div>
-        <div>
-          <TextField
-            required
-            id="filled-required"
-            label="Required"
-            defaultValue="Hello World"
-            variant="filled"
-          />
-          <TextField
-            disabled
-            id="filled-disabled"
-            label="Disabled"
-            defaultValue="Hello World"
-            variant="filled"
-          />
-          <TextField
-            id="filled-password-input"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            variant="filled"
-          />
-          <TextField
-            id="filled-read-only-input"
-            label="Read Only"
-            defaultValue="Hello World"
-            InputProps={{
-              readOnly: true,
-            }}
-            variant="filled"
-          />
-          <TextField
-            id="filled-number"
-            label="Number"
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="filled"
-          />
-          <TextField id="filled-search" label="Search field" type="search" variant="filled" />
-          <TextField
-            id="filled-helperText"
-            label="Helper text"
-            defaultValue="Default Value"
-            helperText="Some important text"
-            variant="filled"
-          />
-        </div>
-        <div>
-          <TextField
-            required
-            id="outlined-required"
-            label="Required"
-            defaultValue="Hello World"
-            variant="outlined"
-          />
-          <TextField
-            disabled
-            id="outlined-disabled"
-            label="Disabled"
-            defaultValue="Hello World"
-            variant="outlined"
-          />
-          <TextField
-            id="outlined-password-input"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            variant="outlined"
-          />
-          <TextField
-            id="outlined-read-only-input"
-            label="Read Only"
-            defaultValue="Hello World"
-            InputProps={{
-              readOnly: true,
-            }}
-            variant="outlined"
-          />
-          <TextField
-            id="outlined-number"
-            label="Number"
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
-          />
-          <TextField id="outlined-search" label="Search field" type="search" variant="outlined" />
-          <TextField
-            id="outlined-helperText"
-            label="Helper text"
-            defaultValue="Default Value"
-            helperText="Some important text"
-            variant="outlined"
-          />
-        </div>
-      </form>
+      <React.Fragment>
+        <Paper className={classes.paper}>
+          <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
+            <Grid container spacing={3}>
+              <Grid item xs={6} sm={3}>
+                <InputLabel htmlFor="type">Type</InputLabel>
+                <NativeSelect
+                  required
+                  value={this.state.type}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'type',
+                    id: 'type',
+                  }}
+                >
+                  <option aria-label="None" value="" />
+                  <option value={"news"}>News</option>
+                  <option value={"article"}>Article</option>
+                  <option value={"video"}>Video</option>
+                </NativeSelect>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="editorID"
+                  name="editorID"
+                  label="Editor ID"
+                  placeholder="News"
+                  value={this.state.editorID}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  id="sourceURL"
+                  name="sourceURL"
+                  label="Source URL"
+                  placeholder="URL for article / video"
+                  value={this.state.sourceURL}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="sourceDomain"
+                  name="sourceDomain"
+                  label="Source Domain"
+                  placeholder="e.g. https://www.thestar.com"
+                  value={this.state.sourceDomain}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="authors"
+                  name="authors"
+                  label="Author(s)"
+                  placeholder="comma-seperated"
+                  value={this.state.authors}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="categories"
+                  name="categories"
+                  label="Categories"
+                  placeholder="e.g. business,tech,world,..."
+                  value={this.state.categories}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="keywords"
+                  name="keywords"
+                  label="Keywords"
+                  placeholder="e.g. trump,climate change,lockdown,..."
+                  value={this.state.keywords}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="stocks"
+                  name="stocks"
+                  label="Stocks"
+                  placeholder="e.g. ACB,AAPL,FB,..."
+                  value={this.state.stocks}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="imageURL"
+                  name="imageURL"
+                  label="Image URL"
+                  value={this.state.imageURL}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={10}>
+                <TextField
+                  id="title"
+                  name="title"
+                  label="Title"
+                  value={this.state.title}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  id="cta"
+                  name="cta"
+                  label="Call To Action"
+                  value={this.state.cta}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} xs={6}>
+                <TextField
+                  id="summary"
+                  name="summary"
+                  label="Summary"
+                  multiline="true"
+                  rows="4"
+                  rowsMax="4"
+                  value={this.state.summary}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="htmlContent"
+                  name="htmlContent"
+                  label="HTML"
+                  multiline="true"
+                  rows="8"
+                  rowsMax="12"
+                  value={this.state.htmlContent}
+                  onChange={this.handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </Grid>
+              <Grid item sm={3}>
+                <AmplifySignOut />
+              </Grid>
+            </Grid>
+          </form>
+        </Paper>
+      </React.Fragment>
     );
   }
 

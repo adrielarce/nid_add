@@ -1,7 +1,6 @@
-import logo from './logo.svg';
 import NidAddForm from './components/NidAddForm';
 import './App.css';
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
+import { withAuthenticator } from '@aws-amplify/ui-react'
 
 function App() {
   return (
@@ -9,7 +8,6 @@ function App() {
       <header className="App-header">
       </header>
       <NidAddForm/>
-      <AmplifySignOut />
     </div>
   );
 }
