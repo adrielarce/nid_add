@@ -50,47 +50,6 @@ class NidAddForm extends Component {
       [id]: event.target.value
     });
   };
-  /*
-  handleSubmit = async event => {
-    event.preventDefault();
-    console.log(this.state.sourceURL);
-    await API.post("nidAPI", "/nid", {
-      body: {
-        nid: uuidv4(),
-        added: Date.now(),
-        retrieve_method: "ManualSubmit",
-        type: this.state.type,
-        source: this.state.editorID,
-        article_url: this.state.sourceURL,
-        article_domain: this.state.sourceDomain,
-        authors: this.state.authors,
-        categories_submitted: this.state.categories,
-        keywords_submitted: this.state.keywords,
-        stocks: this.state.stocks,
-        picture: this.state.imageURL,
-        title: this.state.title,
-        cta: this.state.cta,
-        summary: this.state.summary,
-        html_content: this.state.html
-      }
-    });
-    this.setState({
-      type: "",
-      editorID: "",
-      sourceURL: "",
-      sourceDomain: "",
-      authors: "",
-      categories: "",
-      keywords: "",
-      stocks: "",
-      imageURL: "",
-      title: "",
-      cta: "",
-      summary: "",
-      html: ""
-    });
-  };
-  */
   handleSubmit = async event => {
     event.preventDefault();
     //setIsLoading(true);
@@ -128,8 +87,7 @@ class NidAddForm extends Component {
         htmlContent: ""
       });
     } catch (e) {
-      //onError(e);
-      //setIsLoading(false);
+      console.log(e);
     }
   }
   createNID = content => {
